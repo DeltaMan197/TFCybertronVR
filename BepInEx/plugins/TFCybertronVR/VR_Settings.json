@@ -1,0 +1,17 @@
+{
+    "version": 1,
+    "modelScale": 0.75,
+    "fov": 110,
+    "cameraHeight": 1.7,
+    "autoReload": true,
+    "weaponGrabStyle": "standard",
+    "enableAudioSpatialization": true,
+    "enableMotionBlur": true,
+    "ikWeight": 1.0,
+    "ikStretch": 0.3,
+    "footReach": 0.8,
+    "vignetteIntensity": 0.8,
+    "vignetteRoundness": 0.8,
+    "cameraDistance": 0.6,
+    "lastSave": "2024-01-15T12:00:00Z"
+}
