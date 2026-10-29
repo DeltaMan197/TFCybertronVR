@@ -1,0 +1,105 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+      
+    - name: Install dependencies
+      run: dotnet restore
+      
+    - name: Build Release
+      run: dotnet build -c Release --no-restore
+      
+    - name: Create Release ZIP
+      run: |
+        mkdir -p build/output
+        cp -r src/build/Release/*.dll build/output/
+        cp -r BepInEx/build/*.dll build/output/
+        cd build/output
+        zip -r TFCybertronVR-${{ github.ref_name }}.dll $(find . -name "*.dll")
+        cd -
+      
+    - name: Calculate SHA256
+      id: sha256
+      run: |
+        sha256sum build/output/TFCybertronVR-${{ github.ref_name }}.dll | cut -d' ' -f1 > build/output/sha256.txt
+        echo "SHA256=$(cat build/output/sha256.txt)" >> $GITHUB_OUTPUT
+      
+    - name: Get File Size
+      id: filesize
+      run: |
+        size=$(stat -c%s build/output/TFCybertronVR-${{ github.ref_name }}.dll)
+        echo "SIZE=$size" >> $GITHUB_OUTPUT
+        echo "The file size is: $size bytes"
+      
+    - name: Publish Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/output/TFCybertronVR-${{ github.ref_name }}.dll
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        body: |
+          ## Release Notes for v${{ github.ref_name }}
+          
+          ### New Features
+          - Full OpenXR VR support
+          - IK body control system
+          - Weapon grab points
+          
+          ### Improvements
+          - Camera positioning fix
+          - BepInEx integration
+          - Model scaling (0.75x default)
+          
+          ### Bug Fixes
+          - Fixed game crashes on startup
+          - Improved VR hand rendering
+          
+          ### Known Issues
+          - None known at this time
+          
+          ---
+          Generated automatically by GitHub Actions
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-manifest:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Update manifest
+      run: |
+        # Update the main manifest with new version info
+        sed -i "s/\"version\": \"1.0.0\"/\"version\": \"${{ github.ref_name }}\"/g" packages/manifest-v3.json
+        sed -i "s/\"TFCybertronVR-1.0.0.zip\"/\"TFCybertronVR-${{ github.ref_name }}.zip\"/g" packages/manifest-v3.json
+        
+        # Update release metadata
+        sed -i "s/\"TFCybertronVR-${{ github.ref_name }}.dll\"/\"TFCybertronVR-${{ github.ref_name }}.zip\"/g" releases/v${{ github.ref_name }}.json
+        sed -i "s/\"1.0.0\"/\"${{ github.ref_name }}\"/g" releases/v${{ github.ref_name }}.json
+      
+    - name: Commit changes
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add packages/manifest-v3.json releases/v${{ github.ref_name }}.json
+        git commit -m "Update manifest for v${{ github.ref_name }}"
+        git push
