@@ -201,8 +201,6 @@ SOFTWARE.
 ---
 
 ## 📞 Support
-
-- **Discord:** Join the TF Cybertron VR community
 - **Issues:** Report bugs on GitHub
 - **Feature Requests:** Submit via GitHub Issues
 
@@ -221,5 +219,3 @@ SOFTWARE.
 - Model scaling (0.75x default)
 
 ---
-
-**Made with ❤️ for the Transformers VR Community**
