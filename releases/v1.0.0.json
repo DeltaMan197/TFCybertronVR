@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "release_date": "2024-01-15",
+  "files": [
+    {
+      "name": "TFCybertronVR-1.0.0.zip",
+      "size": 45678901,
+      "sha256": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+      "download_url": "https://github.com/DeltaMan197/TFCybertronVR/releases/download/v1.0.0/TFCybertronVR-1.0.0.zip"
+    }
+  ],
+  "notes": "Initial release with full OpenXR support",
+  "minimum_game_version": "1.0.0",
+  "recommended_system": "GTX 1060 6GB / RTX 3060 or higher"
+}
