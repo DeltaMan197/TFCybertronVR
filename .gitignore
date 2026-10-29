@@ -1,0 +1,33 @@
+# Binaries for compiling C#
+**/*.dll
+**/*.pdb
+**/*.exe
+**/*.nupkg
+
+# Build output
+bin/
+obj/
+
+# Unity specific
+!.gitignore
+!.gitattributes
+!.gitmodules
+Build/
+Library/
+Temp/
+Logs/
+
+# Meta
+.idea/
+.vs/
+*.csproj.user
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Mod-specific
+BepInEx/
+Data/
+Plugins/
